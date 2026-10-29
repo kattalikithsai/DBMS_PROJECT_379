@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Public Grievance Registration and Resolution System | DBMS Course Project</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Chart.js for Interactive Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Top Navigation & Academic Header -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-icon">🏛️</div>
+        <div>
+          <h1 class="brand-title">Public Grievance Redressal System</h1>
+          <p class="brand-subtitle">Municipal Citizen Grievance Registration & Resolution Portal</p>
+        </div>
+      </div>
+      <div class="student-badge">
+        <span>👨‍🎓 Student: <strong>KATTA LIKITH SAI</strong></span>
+        <span>•</span>
+        <span>Roll No: <strong>251FA18379</strong></span>
+        <span>•</span>
+        <span>S.No: <strong>41</strong></span>
+        <span>•</span>
+        <span>Course: <strong>DBMS Project</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs-bar">
+    <div class="tabs-container">
+      <button class="tab-btn active" data-tab="tab-dashboard">
+        📊 Dashboard & Analytics
+      </button>
+      <button class="tab-btn" data-tab="tab-citizen">
+        ✍️ Citizen Services & Lodge Grievance
+      </button>
+      <button class="tab-btn" data-tab="tab-tracker">
+        🔍 Live Grievance Tracker
+      </button>
+      <button class="tab-btn" data-tab="tab-officer">
+        👮 Officer & Department Console
+      </button>
+      <button class="tab-btn" data-tab="tab-sql">
+        💻 SQL Viva Console & Queries
+      </button>
+      <button class="tab-btn" data-tab="tab-docs">
+        📐 ER Model & Normalization
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="main-wrapper">
+
+    <!-- ========================================================================= -->
+    <!-- TAB 1: DASHBOARD & ANALYTICS                                              -->
+    <!-- ========================================================================= -->
+    <section id="tab-dashboard" class="tab-panel active">
+      <!-- KPI Metrics Grid -->
+      <div class="metrics-grid">
+        <div class="metric-card blue">
+          <div class="metric-info">
+            <h4>Total Complaints</h4>
+            <div class="metric-value" id="kpi-total">0</div>
+            <div class="metric-subtitle">Across 6 Civic Departments</div>
+          </div>
+          <div class="metric-icon">📋</div>
+        </div>
+
+        <div class="metric-card amber">
+          <div class="metric-info">
+            <h4>Active / In Progress</h4>
+            <div class="metric-value" id="kpi-pending">0</div>
+            <div class="metric-subtitle">Under active investigation</div>
+          </div>
+          <div class="metric-icon">⏳</div>
+        </div>
+
+        <div class="metric-card green">
+          <div class="metric-info">
+            <h4>Resolved Grievances</h4>
+            <div class="metric-value" id="kpi-resolved">0</div>
+            <div class="metric-subtitle" id="kpi-rate">0% Resolution Rate</div>
+          </div>
+          <div class="metric-icon">✅</div>
+        </div>
+
+        <div class="metric-card red">
+          <div class="metric-info">
+            <h4>SLA Overdue / Breached</h4>
+            <div class="metric-value" id="kpi-overdue">0</div>
+            <div class="metric-subtitle">Requiring urgent escalation</div>
+          </div>
+          <div class="metric-icon">🚨</div>
+        </div>
+
+        <div class="metric-card purple">
+          <div class="metric-info">
+            <h4>Citizen Satisfaction</h4>
+            <div class="metric-value" id="kpi-rating">0.0 / 5.0</div>
+            <div class="metric-subtitle">Average Citizen Star Rating</div>
+          </div>
+          <div class="metric-icon">⭐</div>
+        </div>
+      </div>
+
+      <!-- Charts Grid -->
+      <div class="grid-2">
+        <div class="content-card">
+          <div class="card-header">
+            <h3 class="card-title">📈 Department Grievance & Resolution Overview</h3>
+          </div>
+          <canvas id="chart-department" height="220"></canvas>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h3 class="card-title">🏷️ Complaints by Category Distribution</h3>
+          </div>
+          <canvas id="chart-category" height="220"></canvas>
+        </div>
+      </div>
+
+      <!-- Department Performance Table -->
+      <div class="content-card">
+        <div class="card-header">
+          <h3 class="card-title">🏢 Civic Department Service Level Agreement (SLA) & Performance Roster</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Department Name</th>
+                <th>Head Officer</th>
+                <th>Total Complaints</th>
+                <th>Resolved</th>
+                <th>Pending</th>
+                <th>Overdue (SLA Breached)</th>
+                <th>Resolution %</th>
+                <th>Citizen Rating</th>
+              </tr>
+            </thead>
+            <tbody id="dept-table-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 2: CITIZEN SERVICES & LODGE GRIEVANCE                                 -->
+    <!-- ========================================================================= -->
+    <section id="tab-citizen" class="tab-panel">
+      <div class="grid-2">
+        <!-- Lodge Grievance Form -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3 class="card-title">✍️ Lodge a New Public Grievance</h3>
+            <span class="badge badge-assigned">Automatic SLA Assignment</span>
+          </div>
+
+          <form id="lodge-grievance-form">
+            <div class="form-group">
+              <label class="form-label">Citizen Identity (Submitting as):</label>
+              <select id="citizen-select" class="form-control" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Target Civic Department:</label>
+                <select id="dept-select" class="form-control" required>
+                  <option value="">-- Choose Department --</option>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Grievance Category & SLA:</label>
+                <select id="category-select" class="form-control" required disabled>
+                  <option value="">-- Select department first --</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Priority Level:</label>
+                <select id="priority-select" class="form-control">
+                  <option value="Low">Low (General inquiry/maintenance)</option>
+                  <option value="Medium" selected>Medium (Standard civic grievance)</option>
+                  <option value="High">High (Impacting multiple households)</option>
+                  <option value="Urgent">Urgent (Safety hazard / Health hazard)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Municipal Ward Number:</label>
+                <input type="number" id="ward-input" class="form-control" value="12" min="1" max="100" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Grievance Subject / Title:</label>
+              <input type="text" id="title-input" class="form-control" placeholder="Brief summary (e.g. Broken water pipe leaking near Gate 2)" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Detailed Description of Problem:</label>
+              <textarea id="desc-input" class="form-control" rows="3" placeholder="Provide full details, landmarks, frequency, and severity..." required></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Exact Location / Address:</label>
+                <input type="text" id="location-input" class="form-control" placeholder="Street, colony, opposite landmark" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Postal Pincode:</label>
+                <input type="text" id="pincode-input" class="form-control" value="522002" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.85rem; cursor:pointer;">
+                <input type="checkbox" id="attachment-check" checked> Attach simulated photographic evidence (`photo_evidence.jpg`)
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              🚀 Submit Grievance & Generate Tracking Ticket
+            </button>
+          </form>
+        </div>
+
+        <!-- Registered Grievances by Citizen -->
+        <div class="content-card">
+          <div class="card-header">
+            <h3 class="card-title">📂 Grievances by Selected Citizen</h3>
+            <span id="citizen-active-badge" class="badge badge-medium">Citizen Records</span>
+          </div>
+
+          <div id="citizen-grievances-list" style="display:flex; flex-direction:column; gap:0.75rem; max-height:550px; overflow-y:auto;">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 3: LIVE GRIEVANCE TRACKER                                             -->
+    <!-- ========================================================================= -->
+    <section id="tab-tracker" class="tab-panel">
+      <div class="content-card">
+        <div class="card-header">
+          <h3 class="card-title">🔍 Real-Time Grievance Lifecycle Tracker</h3>
+          <p style="font-size:0.85rem; color:var(--text-muted);">Enter any Ticket Number (e.g. <strong>PGR-2026-1001</strong>, <strong>PGR-2026-1002</strong>, <strong>PGR-2026-1005</strong>) to view full audit trail.</p>
+        </div>
+
+        <div style="display:flex; gap:0.75rem; margin-bottom:1.5rem; max-width:600px;">
+          <input type="text" id="tracker-input" class="form-control" placeholder="Enter Ticket Number (e.g. PGR-2026-1001)" value="PGR-2026-1001">
+          <button id="btn-track" class="btn btn-primary">Track Status</button>
+        </div>
+
+        <div id="tracker-result" style="display:none;">
+          <!-- Ticket Header Summary -->
+          <div style="background:#f1f5f9; padding:1.25rem; border-radius:var(--radius); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+            <div>
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <h2 id="track-ticket-no" style="color:var(--primary); font-size:1.5rem;">PGR-2026-1001</h2>
+                <span id="track-status-badge" class="badge">Status</span>
+                <span id="track-priority-badge" class="badge">Priority</span>
+                <span id="track-sla-badge" class="badge">SLA</span>
+              </div>
+              <h3 id="track-title" style="margin-top:0.4rem; font-size:1.15rem; color:var(--text-main);">Title</h3>
+              <p id="track-desc" style="color:var(--text-muted); font-size:0.9rem; margin-top:0.25rem;">Description</p>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:0.85rem; color:var(--text-muted);">Assigned Officer:</div>
+              <div id="track-officer" style="font-weight:700; color:var(--text-main);">Officer Name</div>
+              <div id="track-dept" style="font-size:0.8rem; color:var(--primary-light);">Department</div>
+              <div id="track-deadline" style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">SLA Deadline</div>
+            </div>
+          </div>
+
+          <!-- Lifecycle Timeline -->
+          <h4 style="font-size:1rem; font-weight:700; margin-bottom:0.75rem;">📜 Chronological Audit Trail & Action Taken Reports (ATR)</h4>
+          <div class="stepper-timeline" id="track-timeline">
+            <!-- Timeline steps rendered here -->
+          </div>
+
+          <!-- Action buttons (Feedback or Escalation) -->
+          <div id="tracker-actions" style="margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid var(--border); display:flex; gap:1rem; flex-wrap:wrap;">
+            <!-- Buttons injected based on grievance status -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 4: OFFICER & DEPARTMENT CONSOLE                                       -->
+    <!-- ========================================================================= -->
+    <section id="tab-officer" class="tab-panel">
+      <!-- Officer Roster & Caseload -->
+      <div class="content-card">
+        <div class="card-header">
+          <h3 class="card-title">👮 Municipal Officers Caseload & Productivity Roster</h3>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Officer Name</th>
+                <th>Designation</th>
+                <th>Department</th>
+                <th>Total Assigned</th>
+                <th>Active Cases</th>
+                <th>Resolved</th>
+                <th>SLA Breached Cases</th>
+              </tr>
+            </thead>
+            <tbody id="officers-table-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Grievance Action Queue -->
+      <div class="content-card">
+        <div class="card-header">
+          <h3 class="card-title">📋 Grievance Action Queue (Officer Management Console)</h3>
+          <div style="display:flex; gap:0.5rem;">
+            <select id="filter-dept" class="form-control" style="width: auto;">
+              <option value="">All Departments</option>
+            </select>
+            <select id="filter-status" class="form-control" style="width: auto;">
+              <option value="ALL">All Statuses</option>
+              <option value="Submitted">Submitted</option>
+              <option value="Assigned">Assigned</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
+              <option value="OVERDUE">🚨 SLA Overdue Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Ticket #</th>
+                <th>Citizen</th>
+                <th>Department</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>SLA Status</th>
+                <th>Assigned Officer</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="officer-queue-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 5: SQL VIVA CONSOLE & QUERIES                                         -->
+    <!-- ========================================================================= -->
+    <section id="tab-sql" class="tab-panel">
+      <div class="content-card">
+        <div class="card-header">
+          <h3 class="card-title">💻 DBMS Lab & Viva Voce Interactive SQL Console</h3>
+          <span class="badge badge-assigned">Direct SQLite Engine</span>
+        </div>
+        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">
+          Select any of the 10 university-curated DBMS queries below (demonstrating Relational Joins, Grouping with HAVING, Subqueries, Self-Joins, Window Functions, and CTEs), or type your own custom SQL <code>SELECT</code> statement to execute against <strong>grievance.db</strong>.
+        </p>
+
+        <!-- Preset Query Chips -->
+        <div class="query-presets-list" id="query-chips">
+          <!-- Populated from API -->
+        </div>
+
+        <!-- Query Runner Box -->
+        <div class="query-runner-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <label style="font-size:0.85rem; font-weight:700; color:#94a3b8;">SQL QUERY EDITOR:</label>
+            <span id="query-cat-label" style="font-size:0.75rem; color:#38bdf8;">Custom Query</span>
+          </div>
+          <textarea id="sql-editor" class="query-editor" spellcheck="false">SELECT * FROM vw_active_grievance_board LIMIT 10;</textarea>
+          <div style="margin-top:0.75rem; display:flex; justify-content:space-between; align-items:center;">
+            <button id="btn-run-sql" class="btn btn-success">
+              ⚡ Execute SQL Query
+            </button>
+            <span id="query-status-info" style="font-size:0.85rem; color:#94a3b8;">Ready</span>
+          </div>
+        </div>
+
+        <!-- Query Output Table -->
+        <div class="table-responsive" style="max-height: 450px; overflow-y: auto;">
+          <table class="data-table" id="sql-result-table">
+            <thead id="sql-result-head">
+              <!-- Rendered dynamically -->
+            </thead>
+            <tbody id="sql-result-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 6: ER MODEL & NORMALIZATION                                           -->
+    <!-- ========================================================================= -->
+    <section id="tab-docs" class="tab-panel">
+      <div class="content-card">
+        <div class="card-header">
+          <h3 class="card-title">📐 Entity Relationship (ER) Model & Database Schema</h3>
+          <span class="badge badge-resolved">3NF / BCNF Normalized</span>
+        </div>
+
+        <div style="background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius); padding:1.5rem; margin-bottom:1.5rem;">
+          <h4 style="color:var(--primary); margin-bottom:0.75rem;">1. Relational Entities & Structural Cardinalities</h4>
+          <ul style="margin-left:1.5rem; font-size:0.92rem; line-height:1.8;">
+            <li><strong>DEPARTMENTS (1) ────< (M) CATEGORIES</strong>: One department governs multiple specific grievance categories with individual SLAs.</li>
+            <li><strong>CITIZENS (1) ────< (M) GRIEVANCES</strong>: A citizen can register multiple complaints; each complaint belongs strictly to one citizen.</li>
+            <li><strong>DEPARTMENTS (1) ────< (M) OFFICERS</strong>: Officers belong to a specific department.</li>
+            <li><strong>OFFICERS (1) ────< (M) OFFICERS (Self-Join)</strong>: Hierarchical supervisory tree where an officer reports to a designated supervisor.</li>
+            <li><strong>OFFICERS (1) ────< (M) GRIEVANCES</strong>: An officer is assigned to investigate and resolve grievances.</li>
+            <li><strong>GRIEVANCES (1) ────< (M) GRIEVANCE_TIMELINE</strong>: Complete immutable audit log of status changes and action taken notes.</li>
+            <li><strong>GRIEVANCES (1) ────< (1) GRIEVANCE_FEEDBACK</strong>: Exactly one feedback & star rating per resolved grievance (enforced via <code>UNIQUE(grievance_id)</code>).</li>
+            <li><strong>GRIEVANCES (1) ────< (M) ESCALATIONS</strong>: Overdue or appealed grievances escalate through hierarchical tiers.</li>
+          </ul>
+        </div>
+
+        <div class="grid-2">
+          <div style="background:#ffffff; border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem;">
+            <h4 style="color:var(--primary); margin-bottom:0.75rem;">2. Normalization Breakdown</h4>
+            <div style="font-size:0.9rem; line-height:1.6; display:flex; flex-direction:column; gap:0.75rem;">
+              <div>
+                <strong>First Normal Form (1NF):</strong> All attributes contain atomic values (single values only). Each table has a unique primary key with no repeating groups.
+              </div>
+              <div>
+                <strong>Second Normal Form (2NF):</strong> Achieved 1NF, and all non-key attributes are fully functionally dependent on the entire primary key (no partial dependencies).
+              </div>
+              <div>
+                <strong>Third Normal Form (3NF):</strong> Achieved 2NF, and no transitive dependencies exist (i.e. non-prime attributes do not depend on other non-prime attributes). Department names and category SLA days are isolated into dedicated relation tables.
+              </div>
+            </div>
+          </div>
+
+          <div style="background:#ffffff; border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem;">
+            <h4 style="color:var(--primary); margin-bottom:0.75rem;">3. Academic Candidate Details</h4>
+            <table class="data-table">
+              <tr><td><strong>Candidate Name</strong></td><td>KATTA LIKITH SAI</td></tr>
+              <tr><td><strong>Roll Number</strong></td><td>251FA18379</td></tr>
+              <tr><td><strong>Serial Number</strong></td><td>41</td></tr>
+              <tr><td><strong>Project Title</strong></td><td>Public Grievance Registration and Resolution</td></tr>
+              <tr><td><strong>Course</strong></td><td>Database Management Systems (DBMS Lab)</td></tr>
+              <tr><td><strong>Database Engine</strong></td><td>SQLite 3.50+ (ANSI SQL Compliant)</td></tr>
+              <tr><td><strong>Architecture</strong></td><td>Full-Stack (Node.js REST API + HTML5/CSS3/Vanilla JS)</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: UPDATE GRIEVANCE STATUS (OFFICER)                                  -->
+  <!-- ========================================================================= -->
+  <div class="modal-backdrop" id="modal-update-status">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('modal-update-status')">&times;</button>
+      <h3 style="color:var(--primary); margin-bottom:0.5rem;">Update Grievance Status</h3>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.25rem;">
+        Ticket: <strong id="modal-status-ticket"></strong>
+      </p>
+
+      <form id="form-update-status">
+        <input type="hidden" id="modal-status-id">
+
+        <div class="form-group">
+          <label class="form-label">New Resolution Status:</label>
+          <select id="modal-status-select" class="form-control" required>
+            <option value="In Progress">In Progress (Field team dispatched)</option>
+            <option value="Under Review">Under Review (Inspection complete)</option>
+            <option value="Resolved">Resolved (Work completed & verified)</option>
+            <option value="Rejected">Rejected (Out of municipal scope / invalid)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Officer In-Charge Name:</label>
+          <input type="text" id="modal-officer-name" class="form-control" value="Arjun Reddy (AEE)" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Action Taken Report (ATR) / Remarks:</label>
+          <textarea id="modal-status-remarks" class="form-control" rows="3" placeholder="Explain the civic action taken, equipment used, or completion details..." required></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-update-status')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Status & Update Audit Log</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: CITIZEN FEEDBACK                                                   -->
+  <!-- ========================================================================= -->
+  <div class="modal-backdrop" id="modal-feedback">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('modal-feedback')">&times;</button>
+      <h3 style="color:var(--primary); margin-bottom:0.5rem;">Citizen Satisfaction Rating</h3>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.25rem;">
+        Rate your resolution experience for Ticket: <strong id="modal-feedback-ticket"></strong>
+      </p>
+
+      <form id="form-feedback">
+        <input type="hidden" id="modal-feedback-id">
+
+        <div class="form-group" style="text-align:center; margin-bottom:1.5rem;">
+          <label class="form-label">Select Star Rating (1 to 5):</label>
+          <div class="star-rating" id="modal-stars">
+            <span class="star filled" data-star="1">★</span>
+            <span class="star filled" data-star="2">★</span>
+            <span class="star filled" data-star="3">★</span>
+            <span class="star filled" data-star="4">★</span>
+            <span class="star filled" data-star="5">★</span>
+          </div>
+          <input type="hidden" id="modal-rating-val" value="5">
+          <div id="modal-rating-label" style="font-weight:700; color:var(--accent); margin-top:0.35rem;">Highly Satisfied (5 Stars)</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Citizen Feedback Comments:</label>
+          <textarea id="modal-feedback-comments" class="form-control" rows="3" placeholder="Share your experience with the officer's response time and resolution quality..."></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-feedback')">Cancel</button>
+          <button type="submit" class="btn btn-accent">Submit Feedback</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- MODAL: ESCALATE GRIEVANCE                                                 -->
+  <!-- ========================================================================= -->
+  <div class="modal-backdrop" id="modal-escalate">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('modal-escalate')">&times;</button>
+      <h3 style="color:var(--danger); margin-bottom:0.5rem;">⚠️ Escalate Grievance to Supervisory Authority</h3>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1.25rem;">
+        Ticket: <strong id="modal-escalate-ticket"></strong>
+      </p>
+
+      <form id="form-escalate">
+        <input type="hidden" id="modal-escalate-id">
+
+        <div class="form-group">
+          <label class="form-label">Escalation Reason:</label>
+          <select id="modal-escalate-reason" class="form-control">
+            <option value="SLA Breached: Resolution delayed past committed deadline">SLA Breached: Resolution delayed past committed deadline</option>
+            <option value="Unsatisfactory response / Ineffective civic repair">Unsatisfactory response / Ineffective civic repair</option>
+            <option value="Critical public safety hazard requiring immediate intervention">Critical public safety hazard requiring immediate intervention</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Escalated By (Citizen Name):</label>
+          <input type="text" id="modal-escalate-name" class="form-control" value="Katta Likith Sai" required>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem; margin-top:1rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-escalate')">Cancel</button>
+          <button type="submit" class="btn" style="background:var(--danger); color:#ffffff;">Confirm Escalation</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      <strong>Public Grievance Registration and Resolution System</strong> • Course Project for Database Management Systems (DBMS)
+    </p>
+    <p style="margin-top:0.35rem;">
+      Submitted by: <strong>KATTA LIKITH SAI</strong> (Roll No: <strong>251FA18379</strong>, S.No: <strong>41</strong>)
+    </p>
+  </footer>
+
+  <!-- Main Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>
